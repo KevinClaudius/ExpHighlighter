@@ -1,0 +1,1 @@
+index(someArrayVar,3+2)

@@ -1,0 +1,84 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="styles.css" />
+    <script type="text/javascript" src="antlr3-all.js"></script>
+    <script type="text/javascript" src="antlr3-cli.js"></script>
+    <script type="text/javascript" src="src/output/ExpLexer.js"></script>
+    <script type="text/javascript" src="src/output/ExpParser.js"></script>
+    <script type="text/javascript">
+
+    ClassNames = {
+      'NUMBER': 'exp_number',
+      'ADD': 'exp_plus',
+      'LPAREN': 'exp_paren',
+      'RPAREN': 'exp_paren',
+      'FUNCNAME': 'exp_funcname',
+      'EXP': 'exp_pow',
+      'PV': 'exp_pv',
+      'VARIABLE': 'exp_pv',
+      'STRING': 'exp_string'
+    };
+
+    // Prevent annoying popups when validating an expression
+    //org.antlr.runtime.BaseRecognizer.prototype.emitErrorMessage = function(msg) {
+    //  document.getElementById("errorTxt").text = msg;
+    //}
+
+    function init() {
+      var input = document.getElementById("exp");
+      //input.onchange = evalExpression;
+      //input.onpaste = evalExpression;
+      //input.onkeydown = evalExpression;
+      var evalButton = document.getElementById("eval");
+      evalButton.onclick = evalExpression;
+    }
+
+    function evalExpression() {
+      //try {
+        var highlightedExpression = getHighlightedExpression();
+        document.getElementById("answer").innerHTML = highlightedExpression;
+      //} catch(e) {
+      //  document.getElementById("errorTxt").text = e;
+      //}
+    }
+
+    function getHighlightedExpression() {
+      document.getElementById("answer").innerHTML = "";
+      var expression = document.getElementById("exp").value;
+      if(expression) {
+        var lexer = new ExpLexer(new org.antlr.runtime.ANTLRStringStream(expression));
+        var tokens = new org.antlr.runtime.CommonTokenStream(lexer);
+        var parser = new ExpParser(tokens);
+        var nodes = new org.antlr.runtime.tree.CommonTreeNodeStream(parser.formula().getTree());
+        //nodes.setTokenStream(tokens);
+        var toks = tokens.getTokens();
+        var highlightedExpression = '';
+        for(var i = 0; i<toks.length; i++) {
+          highlightedExpression += getColoredToken(toks[i]);
+        }
+        return highlightedExpression;
+      }
+      else {
+        return "Enter an expression before clicking."; 
+      }
+    }
+ 
+    function getColoredToken(token) {
+      var tokenName = ExpParser.tokenNames[token.getType()];
+      var className = ClassNames[tokenName];
+      if (className) {
+        return '<span class="' + className + '">' + token.getText() + '</span>';
+      } else {
+        return token.getText();
+      }
+    }
+
+    </script>
+  </head>
+  <body onload="init()">
+    <input id="exp" type="text" size="35" />
+    <button id="eval">evaluate</button>
+    <div id="answer"></div>
+    <div id="errorTxt"/>
+  </body>
+</html>

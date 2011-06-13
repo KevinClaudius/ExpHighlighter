@@ -1,0 +1,30 @@
+.exp_number {
+  color: red;
+  font-style: bold;
+}
+
+.exp_plus {
+  /*color: blue;
+  font-weight: bold;*/
+}
+
+.exp_paren {
+  /*color: green;*/
+}
+
+.exp_funcname {
+  color: blue;
+}
+
+.exp_pow {
+  /*color: purple;*/
+}
+
+.exp_pv {
+  color: green;
+}
+
+.exp_string {
+  color: brown;
+  font-style: italic;
+}
